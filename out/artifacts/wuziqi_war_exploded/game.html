@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html ng-app>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="src/angular.min.js"></script>
+    <script src="src/jquery.js"></script>
+    <title>五子棋游戏</title>
+</head>
+
+<style>
+
+
+    body{
+        background-image: url("src/beijing.jpeg");
+        background-repeat: no-repeat;
+        background-size:100% ;
+    }
+    .show{
+        position: absolute;
+        top:100px;
+        left:150px;
+    }
+    input{
+        font-size:20px;
+        font-weight:bold ;
+    }
+    a{
+        color: black;
+        text-decoration: none;
+    }
+    #qisheng{
+     display:none;
+    }
+    .caozuo{
+        font-family: 微软雅黑;
+        float: left;
+        margin-top:420px;
+        margin-left: 10px;
+    }
+    .qipan{
+      float:left;
+    }
+    #container{
+        margin-top:30px;
+        margin-left:450px;
+    }
+    #big td{
+        height: 50px;
+        width: 50px;
+        text-align: center;
+    }
+    th{
+        width:15px;
+    }
+</style>
+
+<body>
+<div id="container">
+<div class="qipan">
+  <table id="big" style="background-color: rgb(212,181,152);" 
+  ng-controller="testCtrl"   border="1"cellspacing="0" cellpadding="0">
+      <tr>
+          <th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>G</th>
+      </tr>
+      <tr ng-repeat="item in items">
+          <th>{{$index + 1}}</th>
+          <td  id={{$index*10}} ng-click="test($event.target)"></td>
+          <td ng-click="test($event.target)" id={{($index*10+1)}}> </td>
+          <td ng-click="test($event.target)" id={{($index*10+2)}}></td>
+          <td ng-click="test($event.target)" id={{($index*10+3)}}></td>
+          <td ng-click="test($event.target)" id={{($index*10+4)}}></td>
+          <td ng-click="test($event.target)" id={{($index*10+5)}}></td>
+          <td ng-click="test($event.target)" id={{($index*10+6)}}></td>
+          <td ng-click="test($event.target)" id={{($index*10+7)}}></td>
+          <td ng-click="test($event.target)" id={{($index*10+8)}}></td>
+          <td ng-click="test($event.target)" id={{($index*10+9)}}></td>
+      </tr>
+  </table>
+</div>
+    <div class="caozuo">
+        <div style="margin-bottom: 20px;">
+        <input type="radio" name="status" checked="checked" value="0">先手
+        <input type="radio" name="status" value="1">后手
+        </div>
+        <div><input id="kaishi" type="button" value="开始" onclick="kaishi()"  style=" background-color: rgb(210,229,220); border: none;"></div>
+        <div><input id="restart" type="button" value="重开" onclick="restart()" disabled="disabled" style="background-color: rgb(210,229,220); border: none;"></div>
+        <div><input id="renshu" type="button" value="认输" onclick="renshu()" disabled="disabled" style="background-color: rgb(210,229,220); border: none;"></div>
+    </div>
+</div>
+<div class="show" style="font-family: 微软雅黑;">
+<table>
+    <tr>
+        <td> 玩家:</td><td id="wanjiax"></td>
+    </tr>
+    <tr>
+        <td> 电脑:</td><td id="diannaox"></td>
+    </tr>
+    <tr>
+        <td> 耗时:</td><td id="shijian"></td>
+    </tr>
+</table>
+</div>
+<div class="music">
+   <audio id="beijingmusic" src="src/beijing.mp3" controls="controls" loop="loop" style="width: 400px;"></audio>
+</div>
+<input type="text" readonly="readonly" id="xianshi" value="电脑位置" onchange="computergo()"></div>
+<div id="qisheng">
+   <audio id="qishengmusic" src="src/1.mp3"></audio>
+    <audio id="qishengmusic2" src="src/1.mp3"></audio>
+</div>
+</body>
+<script>
+var xmlHttp;  
+var dizhi,state,s;
+var zhishi,t;
+function createXMLHttpRequest()  
+{  
+    try{  
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");  
+    }  
+    catch(e)  
+    {  
+        try{  
+            xmlHttp = new XMLHttpRequest();  
+        }  
+        catch(e)  
+        {  
+            xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");  
+        }  
+    }  
+}  
+function startRequest()  
+{  
+    createXMLHttpRequest();  
+                    xmlHttp.onreadystatechange = handleXMLHttpRequest;  
+    xmlHttp.open("GET",dizhi,true);  
+    xmlHttp.send(null);  
+}  
+function handleXMLHttpRequest()  
+{  
+       if(xmlHttp.readyState==4)  
+        {  
+               if(xmlHttp.status==200)  
+              {
+                    zhishi=xmlHttp.responseText;
+                   
+               }  
+               else{
+             	alert(xmlHttp.status+"xixi");
+               }
+       }
+}  
+ function shezhidizhi(){
+   state =computer;
+		 s = "";
+		for (var i = 0; i < 10; i++) {
+			for (var j = 0; j < 10; j++) {
+				s += array[i][j] + ",";
+			}
+		}
+	 dizhi="Servlet2?test=" + s + "&state="+ state;
+ }
+		
+		
+		
+		
+		
+		
+		
+    var flag=false;
+    var minute= 0,second= 0;
+    var loop,yonghu,you,computer;
+    var array=new Array();
+    for(var i=0;i<10;i++){
+        array[i]=new Array();
+        for(var j=0;j<10;j++){
+            array[i][j]=-1;
+        }
+    }
+   function computergo(){
+  var i=zhishi.split(",");
+   var x=parseInt(i[0]),y=parseInt(i[1]),s=parseInt(i[2]);
+   if(s==0){
+	  t=x*10+y;
+	  document.getElementById(t).innerHTML="<img src='src/" + computer + ".png'>";
+	  document.getElementById("qishengmusic2").play();
+	  array[x][y] = computer;
+	  document.getElementById("xianshi").value=parseInt(x+1)+"行,"+(String.fromCharCode(65+y))+"列";
+   }else if(s==1){
+	  
+	   t=x*10+y;
+	
+	    document.getElementById(t).innerHTML="<img src='src/" + computer + ".png'>";
+	    document.getElementById("qishengmusic2").play();
+		 array[x][y] = computer;
+		document.getElementById("xianshi").value=parseInt(x+1)+"行,"+(String.fromCharCode(65+y))+"列";
+	  alert("电脑WIN");
+	  flag=false;
+   }else{
+	   alert("you WIN");
+	   flag=false;
+   }
+    }
+    function testCtrl($scope) {
+        $scope.items = [
+            {},{},{},{},{},{},{},{},{},{}
+        ];
+            $scope.test=function(target) {
+              if (flag) {
+                  if (array[parseInt(target.id/10)][target.id % 10] == -1){
+                      target.innerHTML = "<img src='src/" + you + ".png'>";
+                     document.getElementById("qishengmusic").play();
+                       array[parseInt(target.id/10)][target.id % 10] = you;
+                   shezhidizhi();
+                   startRequest();
+                   setTimeout("computergo()",500);                   }               }
+            }
+    }
+    function jishi(){
+       var nminute=minute.toString();
+        var nsecond=second.toString();
+        if(second==60)
+        {
+            minute++;
+            second=0;
+        }
+        if(second<10)
+           nsecond="0"+second;
+        if(minute<10)
+            nminute="0"+minute;
+        document.getElementById("shijian").innerHTML=nminute+":"+nsecond;
+        second++;
+       loop=setTimeout("jishi()",1000);
+    }
+    function restart(){
+    	flag=true;
+        $("#big td").empty();
+        for(var i=0;i<10;i++){
+            for(var j=0;j<10;j++){
+                array[i][j]=-1;
+            }
+        }
+        clearTimeout(loop);
+        minute=0,second=0;
+        kaishi();
+    }
+    function kaishi(){
+        flag=true;
+       yonghu=document.getElementsByName("status");
+        for(var i=0;i<2;i++){
+            if(yonghu[i].checked){
+                you =yonghu[i].value ;
+            }else{
+                computer=yonghu[i].value;
+            }
+        }
+
+        document.getElementById("renshu").removeAttribute("disabled");
+        document.getElementById("restart").removeAttribute("disabled");
+        document.getElementById("kaishi").setAttribute("disabled","disabled");
+        document.getElementById("beijingmusic").play();
+        document.getElementById("wanjiax").innerHTML="<img src='src/" + you + "x.png'>";
+        document.getElementById("diannaox").innerHTML="<img src='src/" + computer + "x.png'>";
+        jishi();
+        if(you==1){
+        	  shezhidizhi();
+              startRequest(); 
+              setTimeout("computergo()",500);
+        }
+    }
+    function renshu(){
+        flag=false;
+        clearTimeout(loop);
+    }
+    
+   
+</script>
+</html>

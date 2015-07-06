@@ -1,0 +1,92 @@
+body{
+    background: url("bg1.jpg")   no-repeat;
+    background-size:100% 100%;
+    z-index: 10;
+
+    width:100%;
+    height:100%;
+
+
+}
+#zhezhao{
+    background-color: rgba(255, 254, 236, 0.25);
+}
+#bod{
+    z-index: 100;
+
+    float: none;
+}
+
+#header{
+    position: relative;
+    top:120px;
+    text-align: center;
+    height:80px;
+    text-shadow: 5px 8px 5px #8885ff;
+}
+
+#header:hover{
+
+
+}
+#container{
+
+    margin-top: 10%;
+    margin-left: 30%;
+    margin-right: 30%;
+    border: solid 3px rgba(24, 30, 31, 0.15);
+    border-radius: 5px ;
+}
+
+#f1{
+    margin-left: 30%;
+}
+#bu{/*°´Å¥*/
+    margin-top:15px;
+    margin-left: 20%;
+    margin-bottom: 20px;
+    height: 40%;
+    width:30%;
+}
+
+#f1 [type="text"],[type="password"]{
+    margin-top: 20px;
+    margin-left: 10px;
+    height:40px;
+    border: solid 3px #8ebfff;
+    border-radius: 8px ;
+    width: 200px;
+
+}
+
+#f1 [type]:hover{
+    border: solid 2px #ccffde;
+    border-radius: 5px ;
+}
+
+#container #lin{
+    position: relative;
+    left:80%;
+}
+
+#footer{
+    margin-top: 30px;
+    margin-left: 40%;
+    background-color: #66a3ce;
+    width:200px;
+}
+#footer:hover{
+    display: block;
+    visibility: hidden;
+
+}
+#footer {
+    display: block;
+    visibility: hidden;
+    list-style-type:none;
+
+}
+
+label{
+    display: inline;
+}
